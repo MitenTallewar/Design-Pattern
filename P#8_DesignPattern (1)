@@ -1,0 +1,159 @@
+
+	Design Patterns--->
+					Expert-->experience---implementations--
+							small--scale---> scope-- large ---> problem
+							
+					Thoughtprocess-->
+					
+>Creational Design Patterns --> how to create objects in application
+			Singleton Pattern**--> at any point of time make sure to have single instance of a class
+								 1--> n ref--> modification single object
+			Factory Pattern* ---> n---> objection - at one place
+								 request--> n----> 
+								 
+								 
+						Property -- specific class ---> instance attribute business constraints apply
+									
+				Application --- diff -- STudent/Employee ---`Objects--> 	Business Constrint
+							
+					
+			Abstract Factory Pattern
+			Builder Pattern
+			Prototype Pattern
+			
+>Structural Design Patterns --> how to create structures
+			Proxy Pattern -->  lazy=true -->
+								
+			Decorator Pattern* --> 
+					normal decorator
+					decorator with param
+					decorator chaining
+>Behavioral Design Patterns --> Behavioral
+			Iterator Pattern* ---> iterator -- iter/next ---> 
+			
+			
+			
+			
+			
+	import sys
+from abc import ABC
+
+class Person:
+
+    def __init__(self,id,nm,age):
+        self.personId = id
+        self.personName = nm
+        self.personAge = age
+
+class Student(Person):
+    def __init__(self,id,nm,age,fees,clgnm):
+        super().__init__(id,nm,age)
+        self.studFees = fees
+        self.studClg=clgnm
+
+    def __str__(self):
+        return '''
+                Student Id = {},
+                Student Name = {},
+                Student Age = {},
+                Student Fees = {},
+                Student College = {},
+        '''.format(self.personId,self.personName,self.personAge,self.studFees,self.studClg)
+
+class Employee(Person):
+    def __init__(self,id,nm,age,sal,comp):
+        super().__init__(id, nm, age)
+        self.empSal = sal
+        self.empCompany = comp
+
+    def __str__(self):
+        return '''
+                Emp Id = {},
+                Emp Name = {},
+                Emp Age = {},
+                Emp Sal = {},
+                Emp Company = {},
+        '''.format(self.personId,self.personName,self.personAge,self.empSal,self.empCompany)
+
+
+
+class PersonFactory:
+
+    @staticmethod
+    def get_person(whichtype,id,nm,age,amnt,cmp):
+
+        if type(id)==int and id>0 and type(age)==int and age>0:
+            if whichtype == "E":
+                if age>22:
+                    return Employee(id,nm,age,amnt,cmp)
+            elif whichtype == "S":
+                if age>6:
+                    return Student(id,nm,age,amnt,cmp)
+
+
+        raise BaseException("Invalid Person Type")
+
+
+p1 = PersonFactory.get_person("S",101,"ABC",23,2993.34,'XXXX')
+print(p1)
+
+print(type(p1) == Person)
+print(type(p1) == Employee)
+print(type(p1) == Student)
+print('-----------------')
+print(isinstance(p1,Person))
+print(isinstance(p1,Employee))
+print(isinstance(p1,Student))
+
+
+
+sys.exit(0)
+class Student:
+
+    innerstudref = None  #class level property
+
+    wrappercounter=0
+
+    class InnerStudent:
+         innerclasscount = 0
+
+         def __init__(iself,sid,snm):
+            iself.studentId = sid
+            iself.studentName = snm
+            Student.InnerStudent.innerclasscount = Student.InnerStudent.innerclasscount+1
+
+    def __init__(self,sid,snm):
+        Student.wrappercounter = Student.wrappercounter+1
+        if Student.innerstudref == None: # first step -- once called-- first wrapper instance creation.
+            Student.innerstudref = Student.InnerStudent(sid,snm)
+        else: #always --> in short inner init -- will not be called
+            Student.innerstudref.studentId = sid
+            Student.innerstudref.studentName = snm
+
+    def __str__(self):
+        return '''
+                Student Id {},
+                Student Name {}
+                '''.format(Student.innerstudref.studentId,Student.innerstudref.studentName)
+
+
+s1 = Student(101,"AAAA")
+print(s1)
+s2 = Student(102,"BBB")
+print(s1)
+
+s3 = Student(103,"CCC")
+print(s1)
+
+
+print(id(s1))
+print(id(s2))
+print("Wrapper -- ",Student.wrappercounter)
+print("Inner -- ",Student.InnerStudent.innerclasscount) #1
+
+
+#usecase
+		
+			
+			
+			

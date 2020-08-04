@@ -1,0 +1,524 @@
+Creational Design Patterns
+	SingleTone --	there shud be single instance of a class in entire application
+					execution----> modification allowed-- shud be in same instance-- can have 
+					n referecens-
+					
+					whenever there generic things-- such as databases/logger--> use case of singletone
+					design pattern...
+	Factory ---> we can have n instances of class---> but the object creation logic shud be 
+				 at single place---> so that we can make sure-- every object which is been created in
+				 an application-- follows same rules/norms..
+				Also we can apply similar kind of validation to the different classes instances..
+				This is useful for middle/larger scale applications...
+							2 -- student/emp ---> 100s
+				get_person(whichtype,---params--)
+					
+				
+	Abstract Factory--> extension to factory patterns-- which allows to create n instances--> with diff category
+				--> 
+	
+	
+	Prototype
+	
+	
+	
+	Builder
+	
+	
+	
+	
+	
+	
+	from abc import ABC,abstractmethod
+
+class Laptop:
+    def __init__(self,hdd,cpu,ram,blut):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory=ram
+        self.bluetooth = blut
+
+    def __str__(self):
+        return f'''
+        --------------------Laptop Properties--------------------------
+                    Hard Disk : {self.hardDisk}
+                    Processing : {self.processing}
+                    Main Memory : {self.mainmemory}
+                    Bluetooth : {self.bluetooth}
+        ''' 
+
+    def __repr__(self):
+        return str(self)
+
+class Desktop:
+    def __init__(self, hdd, cpu, ram,crt):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory = ram
+        self.monitor = crt
+
+
+    def __str__(self):
+        return f'''
+           --------------------Desktop Properties--------------------------
+                       Hard Disk : {self.hardDisk}
+                       Processing : {self.processing}
+                       Main Memory : {self.mainmemory}
+                       Monitor : {self.monitor}
+           '''
+
+
+    def __repr__(self):
+        return str(self)
+
+
+class Server:
+    def __init__(self, hdd, cpu, ram,space):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory = ram
+        self.serverspace = space
+
+    def __str__(self):
+        return f'''
+        --------------------Server Properties--------------------------
+                    Hard Disk : {self.hardDisk}
+                    Processing : {self.processing}
+                    Main Memory : {self.mainmemory}
+                    Server Space : {self.serverspace}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+
+class ComputerFactory:
+    @staticmethod
+    def get_computer(whichtype,**kargs):
+        if kargs.get('hdd') and kargs.get('cpu') and kargs.get('ram'): #mandatory property validation
+            if whichtype == "S":
+                if kargs.get('space'): #to check specific instances validation part
+                    return Server(kargs.get('hdd'),kargs.get('cpu'),kargs.get('ram'),kargs.get('space'))
+                else:
+                    print('Server space not mentioned..!')
+            elif whichtype == "D":
+                if kargs.get('crt'):
+                    return Desktop(kargs.get('hdd'),kargs.get('cpu'),kargs.get('ram') ,kargs.get('crt'))
+                else:
+                    print('CRT Property missing..!')
+
+            elif whichtype == "L":
+                if kargs.get("bluetooth"):
+                    return Laptop(kargs.get('hdd'),kargs.get('cpu'),kargs.get('ram') ,kargs.get('bluetooth'))
+                else:
+                    print('Bluetooth property missing..!')
+            else:
+                print("Invalid Type...!")
+        print('Mention all mandatory Properties..!')
+
+
+computer = ComputerFactory.get_computer("S",ram="4gb",hdd="5tb",cpu="i7",space="100*100",bluetooth="2.4")
+
+if computer:
+    print("Server -- ",type(computer)== Server)
+    print("Desktop -- ", type(computer) == Desktop)
+    print("Lappy -- ", type(computer) == Laptop)
+
+    print("Server -- ",isinstance(computer,Server))
+    print("Desktop -- ", isinstance(computer,Desktop))
+    print("Lappy -- ", isinstance(computer,Laptop))
+
+else:
+    print(computer)
+
+
+-----------------------------------------------------------------------------------
+
+from abc import ABC,abstractmethod
+class ComputerFactory(ABC):
+
+    @abstractmethod
+    def get_computer(self,kargs):
+        pass
+
+
+class Laptop:
+    def __init__(self,hdd,cpu,ram,blut):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory=ram
+        self.bluetooth = blut
+
+    def __str__(self):
+        return f'''
+        --------------------Laptop Properties--------------------------
+                    Hard Disk : {self.hardDisk}
+                    Processing : {self.processing}
+                    Main Memory : {self.mainmemory}
+                    Bluetooth : {self.bluetooth}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+
+
+class LaptopFactory(ComputerFactory):
+    def get_computer(self,kargs):
+        if kargs.get("bluetooth"):
+            return Laptop(kargs.get('hdd'), kargs.get('cpu'), kargs.get('ram'), kargs.get('bluetooth'))
+        else:
+            print('Bluetooth property missing..!')
+
+
+class Desktop:
+    def __init__(self, hdd, cpu, ram,crt):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory = ram
+        self.monitor = crt
+
+
+    def __str__(self):
+        return f'''
+           --------------------Desktop Properties--------------------------
+                       Hard Disk : {self.hardDisk}
+                       Processing : {self.processing}
+                       Main Memory : {self.mainmemory}
+                       Monitor : {self.monitor}
+           '''
+
+
+    def __repr__(self):
+        return str(self)
+
+
+class DesktopFactory(ComputerFactory):
+    def get_computer(self,kargs):
+        if kargs.get('crt'):
+            return Desktop(kargs.get('hdd'), kargs.get('cpu'), kargs.get('ram'), kargs.get('crt'))
+        else:
+            print('CRT Property missing..!')
+
+
+class Server:
+    def __init__(self, hdd, cpu, ram,space):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory = ram
+        self.serverspace = space
+
+    def __str__(self):
+        return f'''
+        --------------------Server Properties--------------------------
+                    Hard Disk : {self.hardDisk}
+                    Processing : {self.processing}
+                    Main Memory : {self.mainmemory}
+                    Server Space : {self.serverspace}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+
+class ServerFactory(ComputerFactory):
+    def get_computer(self,kargs):
+            if kargs.get('space'):  # to check specific instances validation part
+                return Server(kargs.get('hdd'), kargs.get('cpu'), kargs.get('ram'), kargs.get('space'))
+            else:
+                print('Server space not mentioned..!')
+
+class MainFactory:
+    @staticmethod
+    def get_computer(factory,kargs):
+        if factory and kargs.get('hdd') and kargs.get('cpu') and kargs.get('ram'): #mandatory property validation:
+               return factory.get_computer(kargs)
+        else:
+            print('invalid factory-- or mandatory properties are missing')
+
+
+factory = LaptopFactory()
+computer = MainFactory.get_computer(factory,{"ram":"4gb","hdd":"5tb","cpu":"i7","space":"100*100","bluetooth":"2.4"})
+
+if computer:
+    print("Server -- ",type(computer)== Server)
+    print("Desktop -- ", type(computer) == Desktop)
+    print("Lappy -- ", type(computer) == Laptop)
+
+    print("Server -- ",isinstance(computer,Server))
+    print("Desktop -- ", isinstance(computer,Desktop))
+    print("Lappy -- ", isinstance(computer,Laptop))
+
+else:
+    print(computer)
+
+from abc import ABC,abstractmethod
+class ComputerFactory(ABC):
+
+    @abstractmethod
+    def get_computer(self,kargs):
+        pass
+
+
+class Laptop:
+    def __init__(self,hdd,cpu,ram,blut):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory=ram
+        self.bluetooth = blut
+
+    def __str__(self):
+        return f'''
+        --------------------Laptop Properties--------------------------
+                    Hard Disk : {self.hardDisk}
+                    Processing : {self.processing}
+                    Main Memory : {self.mainmemory}
+                    Bluetooth : {self.bluetooth}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+
+
+class LaptopFactory(ComputerFactory):
+    def get_computer(self,kargs):
+        if kargs.get("bluetooth"):
+            return Laptop(kargs.get('hdd'), kargs.get('cpu'), kargs.get('ram'), kargs.get('bluetooth'))
+        else:
+            print('Bluetooth property missing..!')
+
+
+class Desktop:
+    def __init__(self, hdd, cpu, ram,crt):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory = ram
+        self.monitor = crt
+
+
+    def __str__(self):
+        return f'''
+           --------------------Desktop Properties--------------------------
+                       Hard Disk : {self.hardDisk}
+                       Processing : {self.processing}
+                       Main Memory : {self.mainmemory}
+                       Monitor : {self.monitor}
+           '''
+
+
+    def __repr__(self):
+        return str(self)
+
+
+class DesktopFactory(ComputerFactory):
+    def get_computer(self,kargs):
+        if kargs.get('crt'):
+            return Desktop(kargs.get('hdd'), kargs.get('cpu'), kargs.get('ram'), kargs.get('crt'))
+        else:
+            print('CRT Property missing..!')
+
+
+class Server:
+    def __init__(self, hdd, cpu, ram,space):
+        self.hardDisk = hdd
+        self.processing = cpu
+        self.mainmemory = ram
+        self.serverspace = space
+
+    def __str__(self):
+        return f'''
+        --------------------Server Properties--------------------------
+                    Hard Disk : {self.hardDisk}
+                    Processing : {self.processing}
+                    Main Memory : {self.mainmemory}
+                    Server Space : {self.serverspace}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+
+class ServerFactory(ComputerFactory):
+    def get_computer(self,kargs):
+            if kargs.get('space'):  # to check specific instances validation part
+                return Server(kargs.get('hdd'), kargs.get('cpu'), kargs.get('ram'), kargs.get('space'))
+            else:
+                print('Server space not mentioned..!')
+
+class MainFactory:
+    @staticmethod
+    def get_computer(factory,kargs):
+        if factory and kargs.get('hdd') and kargs.get('cpu') and kargs.get('ram'): #mandatory property validation:
+               return factory.get_computer(kargs)
+        else:
+            print('invalid factory-- or mandatory properties are missing')
+
+
+factory = LaptopFactory()
+computer = MainFactory.get_computer(factory,{"ram":"4gb","hdd":"5tb","cpu":"i7","space":"100*100","bluetooth":"2.4"})
+
+if computer:
+    print("Server -- ",type(computer)== Server)
+    print("Desktop -- ", type(computer) == Desktop)
+    print("Lappy -- ", type(computer) == Laptop)
+
+    print("Server -- ",isinstance(computer,Server))
+    print("Desktop -- ", isinstance(computer,Desktop))
+    print("Lappy -- ", isinstance(computer,Laptop))
+
+else:
+    print(computer)
+
+
+
+
+--Prototype ---> 
+			instead of creating instances--everytime-- simple clone the instance-->
+			shallow copy-- deep copy ---import clone
+											clone.clone---deepclone
+											
+											
+import copy
+
+
+class Person:
+
+    def __init__(self,pid,pnm,pag,pgen):
+        self.personId = pid
+        self.personName = pnm
+        self.personAge = pag
+        self.pergen = pgen
+
+    def __str__(self):
+        return f'''
+                Person Id : {self.personId}
+                Person Name : {self.personName}
+                Person Age : {self.personAge}
+                Person gender: {self.pergen}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+    def get_clonned_instance(self):
+        return copy.deepcopy(self)
+
+
+#heavy objects--> 1 instance---> hierarchy----> clone--
+p1 = Person(101,"ABCD",29,"M") # entire chain execution - -class loading + constructor -- more time required..
+#p2 = Person(101,"ABCD",29,"M")
+p2 = p1.get_clonned_instance() #simply memory dump
+print(id(p1))
+print(id(p2))
+
+p2.pergen="Female"
+
+print(p1)
+print(p2)
+
+
+
+
+import copy
+
+
+class Person:
+
+    def __init__(self,pid,pnm,pag,pgen):
+        self.personId = pid
+        self.personName = pnm
+        self.personAge = pag
+        self.pergen = pgen
+
+    def __str__(self):
+        return f'''
+                Person Id : {self.personId}
+                Person Name : {self.personName}
+                Person Age : {self.personAge}
+                Person gender: {self.pergen}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+    def get_clonned_instance(self):
+        return copy.deepcopy(self)
+
+
+#heavy objects--> 1 instance---> hierarchy----> clone--
+p1 = Person(101,"ABCD",29,"M") # entire chain execution - -class loading + constructor -- more time required..
+#p2 = Person(101,"ABCD",29,"M")
+p2 = p1.get_clonned_instance() #simply memory dump
+print(id(p1))
+print(id(p2))
+
+p2.pergen="Female"
+
+print(p1)
+print(p2)
+
+
+
+--------------------------------------------
+	Builder --> dyamically type- -- static 
+	
+	
+	
+
+
+
+
+
+class Computer:
+
+    def __init__(self,hdd,ram,cpu):
+        self.hardDisk = hdd
+        self.processing =cpu
+        self.mainmemory = ram
+
+    def attach_dekstop_prop(self,monitor):
+        self.crt = monitor
+
+    def attach_laptop_property(self,blut):
+        self.bluetooth = blut
+
+    def attach_server_property(self,space):
+        self.serverSpace=space
+
+
+c = Computer("100gb","8Gb","2.67Ghz")
+c.attach_dekstop_prop("Philips")
+print(c.__dict__)
+
+import sys
+sys.exit(0)
+
+
+class Person:
+
+    def __init__(self,pid,pnm,pag,pgen):
+        self.personId = pid
+        self.personName = pnm
+        self.personAge = pag
+        self.pergen = pgen
+
+    def __str__(self):
+        return f'''
+                Person Id : {self.personId}
+                Person Name : {self.personName}
+                Person Age : {self.personAge}
+                Person gender: {self.pergen}
+        '''
+
+    def __repr__(self):
+        return str(self)
+
+
+
+p1 = Person(101,"ABCD",22,"M")
+p1.newprop = "ABC"
+print(p1.__dict__)
+del p1.newprop
+print('After deletion-')
+print(p1.__dict__)
